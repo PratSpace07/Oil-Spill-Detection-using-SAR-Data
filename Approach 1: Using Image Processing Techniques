@@ -1,0 +1,26 @@
+Preprocessing Steps
+
+1. Converting to dB values: SAR backscatter values are usually processed in deci-
+bel scale for better dynamic range during processing. We initially attempted log-
+arithmic conversion but later realized our dataset was already in dB format when
+conversion produced abnormal results.
+
+2. NaN cleaning: SAR images contain NaN (Not a Number) values, that are the
+places(pixels) on sensor where no backscatter is received, primarily in shadowed re-
+gions. We identified these null pixels and replaced them with the minimum intensity
+value.
+
+3. Speckle reduction: SAR imagery suffers from granular ”salt-and-pepper” noise
+caused by coherent interference of the radar signals reflected from multiple scatterers
+within a single resolution cell. We applied a 3×3 median filter that replaces each
+pixel value with the median of its neighborhood, effectively smoothing the image
+while preserving edges.
+
+4. Normalization: Initial [0,1] scaling compressed the narrow dB range (-40dB to
+-11dB) into near-zero values. We implemented percentile-based normalization (2-
+98%) to redistribute intensities, enhancing separability between oil spills and ocean
+surfaces for thresholding.
+
+Thresholding : 
+We manually did thresholding, by using skimage.filters library of python.We com-
+puted adaptive threshold based on 32nd percentile of intensity.
